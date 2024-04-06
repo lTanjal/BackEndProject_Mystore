@@ -33,7 +33,7 @@ public class Product {
     private AppUser appUser;
 
     @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "products")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
     private List<Photos> photos;
 
     public Product() {
@@ -124,7 +124,7 @@ public class Product {
     public String toString() {
 
         return "Product [id=" + id + ", Product name=" + productName + ", quantity=" + quantity + ", price=" + price
-                + ", size="+size+", comments="+comments+", owener= " + this.getAppUser().getCmFirstName() + ", status " + this.getStatus() + " ]";
+                + ", size="+size+", comments="+comments+", owner= " + this.getAppUser().getCmFirstName() + ", status " + this.getStatus()+" ]";
     }
 
     

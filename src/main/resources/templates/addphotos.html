@@ -1,0 +1,35 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Add photos</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link type="text/css" rel="stylesheet" href="css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" />
+    
+</head>
+
+<body>
+    <h2>Add photo</h2>
+  
+    <div class="col-md-5">
+
+		<form th:object="${newphotos}" th:action="@{/savePhoto}" action="#" method="post">
+			<input type="hidden" th:field="*{photoId}" />
+            <input type="hidden" th:field="*{product.id}" th:value="${product.id}"/>
+         
+            <label for="productphotos">Photo link</label>
+			<input type="text" id="productphotos" th:field="*{photoLink}" />
+			<div style="clear: both; display: block; height: 10px;"></div>
+
+            
+			<input type="submit" value="Save photo" class="btn btn-success"></input>
+			<div style="clear: both; display: block; height: 10px;"></div>
+
+			<a sec:authorize="hasAuthority('ADMIN')" href="/productlist" class="btn-outline-danger">Cancel</a>
+
+		</form>
+	</div>
+	</div>
+</body>
+
+</html>

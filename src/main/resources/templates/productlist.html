@@ -5,111 +5,131 @@
     <title>Productlist</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link type="text/css" rel="stylesheet" href="css/bootstrap.min.css" th:href="@{css/bootstrap.min.css}" />
-    <link rel="stylesheet" href="css/custom.css"/>
+    <link rel="stylesheet" href="css/custom.css" />
 </head>
 
 <body>
     <h1>Products</h1>
     <div class="col-md-4">
-        <span  sec:authentication="name">Name</span>
-		
-	</div>
-	<div class="col-md-4" style="padding:20px 0">
-		<form th:action="@{/logout}" method="post">
-			<input type="submit" value="Sign Out" class="btn btn-sm btn-danger"/>
-		</form>
+        <span sec:authentication="name">Name</span>
+    </div>
 
-	</div>
-        <table class="table table-striped">
-            <tr>
+    <div class="col-md-4" style="padding:20px 0">
+        <form th:action="@{/logout}" method="post">
+            <input type="submit" value="Sign Out" class="btn btn-sm btn-danger" />
+        </form>
+        <div style="clear: both; display: block; height: 10px;"></div>
+        <a href="/shoppingcard" class="btn btn-warning">My shopping card</a>
+      
+        <a sec:authorize="hasAuthority('ADMIN')" href="/addproduct" class="btn btn-success">Add product</a>
+
+        
+    </div>
+
+    <div class="button-container">
+       
+    </div>
+
+    <table class="table table-striped">
+        <tr>
             <th>Product</th>
             <th>Quantity</th>
-            <th>Price</th> 
+            <th>Price</th>
             <th>Photos</th>
+            <th>Add to shopping cart</th>
+            <th>Comments</th>
             <th sec:authorize="hasAuthority('ADMIN')">Availability</th>
             <th sec:authorize="hasAuthority('ADMIN')">First name</th>
             <th sec:authorize="hasAuthority('ADMIN')">Last name</th>
-            <th sec:authorize="hasAuthority('ADMIN')">Email</th> 
+            <th sec:authorize="hasAuthority('ADMIN')">Email</th>
             <th sec:authorize="hasAuthority('ADMIN')"> </th>
-            </tr>
-            <tr th:each=" product : ${products}">
+        </tr>
+        <tr th:each=" product : ${products}">
+           
                 <td th:text="${product.productName}"></td>
                 <td th:text="${product.quantity}"></td>
                 <td th:text="${product.price}"></td>
-                <td sec:authorize="hasAuthority('ADMIN')" th:text="${product.status.status}"></td>
-                <td sec:authorize="hasAuthority('ADMIN')" th:text="${product.appUser.cmFirstName}"></td>
-                <td sec:authorize="hasAuthority('ADMIN')" th:text="${product.appUser.cmLastName}"></td>
-                <td sec:authorize="hasAuthority('ADMIN')" th:text="${product.appUser.cmEmail}"></td>
                 <td>
                     <div class="photo-container">
                         <th:block th:each="photo, photoIndex : ${product.photos}">
                             <div class="photo-row">
-                                <img class="product-photo" 
-                                     th:src="${photo.photoLink}" 
-                                     th:attr="data-productid=${product.id}, data-photoid=${photoIndex.index}"
-                                     alt="Product Photo" />
+                                <img class="product-photo" th:src="${photo.photoLink}"
+                                    th:attr="data-productid=${product.id}, data-photoid=${photoIndex.index}"
+                                    alt="Product Photo" />
                             </div>
                         </th:block>
+
                     </div>
-                    <a href="#" th:onclick="'showModal(' + ${product.id} + '); return false;'">View All Photos</a>
-
+                   
                 </td>
-                <td sec:authorize="hasAuthority('ADMIN')"><a th:href="@{/delete/{id}(id=${product.id})}" class="btn btn-danger" >Delete</a></td>
-                <td sec:authorize="hasAuthority('USER')"><a th:href="@{/buyproduct/{id}(id=${product.id})}">Buy</a></td>  
-                <td sec:authorize="hasAuthority('ADMIN')"><a th:href="@{/editproduct/{id}(id=${product.id})}">Edit</a></td>  
-            </tr>
-        </table>
-        <a sec:authorize="hasAuthority('ADMIN')" href="/addproduct" class="btn btn-success" >Add product</a>    
+                <td><a th:href="@{/buyproduct/{id}(id=${product.id})}">Buy</a></td>
+                <td th:text="${product.comments}"></td>
+                <td sec:authorize="hasAuthority('ADMIN')" th:text="${product.status.status}"></td>
+                <td sec:authorize="hasAuthority('ADMIN')" th:text="${product.appUser.cmFirstName}"></td>
+                <td sec:authorize="hasAuthority('ADMIN')" th:text="${product.appUser.cmLastName}"></td>
+                <td sec:authorize="hasAuthority('ADMIN')" th:text="${product.appUser.cmEmail}"></td>
+                <td sec:authorize="hasAuthority('ADMIN')"><a th:href="@{/editproduct/{id}(id=${product.id})}">Edit</a>
+                </td>
+                <td sec:authorize="hasAuthority('ADMIN')"><a th:href="@{/addphotos/{id}(id=${product.id})}">Add photos</a>
+                </td>
+                <td sec:authorize="hasAuthority('ADMIN')"><a th:href="@{/delete/{id}(id=${product.id})}"
+                        class="btn btn-danger">Delete</a></td>
 
-        <div id="modal">
-            <span class="close" onclick="hideModal()">&times;</span>
-            <img id="modal-image" src="" alt="Product Photo">
-        </div>
-    
-        <script>
-            var modal = document.getElementById("modal");
-            var modalImage = document.getElementById("modal-image");
-            var currentProductId = null;
-            var currentPhotoIndex = null;
-            var totalPhotos = null;
-        
-            document.querySelectorAll(".product-photo").forEach(function(photo) {
-                photo.addEventListener("click", function() {
-                    currentProductId = this.getAttribute("data-productid");
-                    currentPhotoIndex = parseInt(this.getAttribute("data-photoid"));
-                    totalPhotos = document.querySelectorAll(".product-photo[data-productid='" + currentProductId + "']").length;
-                    showModal();
-                });
-            });
-        
-            document.querySelector(".close").addEventListener("click", function() {
-                hideModal();
-            });
-        
-            window.addEventListener("click", function(event) {
-                if (event.target == modal) {
-                    hideModal();
-                }
-            });
-        
-            function showModal() {
-                modal.style.display = "block";
+           
+        </tr>
+    </table>
+
+    <div id="modal">
+        <span class="close" onclick="hideModal()">&times;</span>
+        <img id="modal-image" src="" alt="Product Photo">
+    </div>
+
+    <script>
+        var modal = document.getElementById("modal");
+        var modalImage = document.getElementById("modal-image");
+        var currentProductId = null;
+        var currentPhotoIndex = null;
+        var totalPhotos = null;
+
+        document.querySelectorAll(".product-photo").forEach(function (photo) {
+            photo.addEventListener("click", function () {
+                currentProductId = this.getAttribute("data-productid");
+                currentPhotoIndex = parseInt(this.getAttribute("data-photoid"));
                 totalPhotos = document.querySelectorAll(".product-photo[data-productid='" + currentProductId + "']").length;
-                console.log("total: "+ totalPhotos);
+                showModal();
+            });
+        });
+
+        document.querySelector(".close").addEventListener("click", function () {
+            hideModal();
+        });
+
+        window.addEventListener("click", function (event) {
+            if (event.target == modal) {
+                hideModal();
+            }
+        });
+
+        function showModal() {
+            modal.style.display = "block";
+            totalPhotos = document.querySelectorAll(".product-photo[data-productid='" + currentProductId + "']").length;
+            console.log("total: " + totalPhotos);
+            console.log("Photoindex: " + currentPhotoIndex);
+            modalImage.src = document.querySelector(".product-photo[data-productid='" + currentProductId + "'][data-photoid='" + currentPhotoIndex + "']").src;
+        }
+
+        function hideModal() {
+            modal.style.display = "none";
+        }
+
+        modalImage.addEventListener("click", function () {
+            if (currentProductId !== null && totalPhotos > 1) {
+                currentPhotoIndex = (currentPhotoIndex + 1) % totalPhotos;
                 modalImage.src = document.querySelector(".product-photo[data-productid='" + currentProductId + "'][data-photoid='" + currentPhotoIndex + "']").src;
             }
-        
-            function hideModal() {
-                modal.style.display = "none";
-            }
-        
-            modalImage.addEventListener("click", function() {
-                if (currentProductId !== null && totalPhotos > 1) {
-                    currentPhotoIndex = (currentPhotoIndex + 1) % totalPhotos;
-                    modalImage.src = document.querySelector(".product-photo[data-productid='" + currentProductId + "'][data-photoid='" + currentPhotoIndex + "']").src;
-                }
-            });
-        </script>
-        
+        });
+    </script>
+
 </body>
+
 </html>

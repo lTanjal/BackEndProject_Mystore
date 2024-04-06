@@ -45,3 +45,22 @@
         cursor: pointer;
     }
 
+    .button-container {
+        position:inherit;
+        top: 10%;
+        right: 200px; /* Adjust this value to move the button horizontally */
+        transform: translateY(-50%);
+    }
+    .button-container1 {
+        position: inherit;
+        top: 8%;
+        right: 20px; /* Adjust this value to move the button horizontally */
+        transform: translateY(-50%);
+    }
+
+
+    input[readonly] {
+        background-color: #f2f2f2; /* Change the background color */
+        color: #999; /* Change the text color */
+    }
+

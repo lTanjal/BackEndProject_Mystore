@@ -1,0 +1,56 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>Add product</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link type="text/css" rel="stylesheet" href="css/bootstrap.min.css" th:href="@{css/bootstrap.min.css}" />
+    <link rel="stylesheet" href="css/custom.css" />
+	
+</head>
+
+<body>
+	<h1>Add product</h1>
+
+	<div class="col-md-6">
+
+		<form th:object="${newproduct}" th:action="@{/save}" action="#" method="post">
+			<input type="hidden" th:field="*{id}" />
+			<label for="productName">Product</label>
+			<input type="text" id="productName" th:field="*{productName}" />
+			<div style="clear: both; display: block; height: 10px;"></div>
+			<label for="quantity">Quantity</label>
+			<input type="text" id="quantity" th:field="*{quantity}" />
+			<div style="clear: both; display: block; height: 10px;"></div>
+			<label for="price">Price</label>
+			<input type="text" id="price" th:field="*{price}" />
+			<div style="clear: both; display: block; height: 10px;"></div>
+
+			<label for="comments">Comments</label>
+			<input type="text" id="comments" th:field="*{comments}" />
+			<div style="clear: both; display: block; height: 10px;"></div>
+
+			<label for="status"> Status</label>
+			<select id="status" th:field="*{status}" class="form-control">
+				<option th:each="statuslist: ${statuses}" th:value="${statuslist.statusId}"
+					th:text="${statuslist.status}"></option>
+			</select>
+			<div style="clear: both; display: block; height: 10px;"></div>
+			<label for="status"> Buyer Info</label>
+			<select id="userlist" th:field="*{appUser}" class="form-control">
+				<option th:each="userlist: ${productBuyer}" th:value="${userlist.cmId}"
+					th:text="${userlist.cmFirstName +' '+ userlist.cmLastName +' '+ userlist.cmEmail+' '+ userlist.userName}">
+				</option>
+			</select>
+			<div style="clear: both; display: block; height: 10px;"></div>
+			
+			<input type="submit" value="Save" class="btn btn-success"></input>
+
+			<a sec:authorize="hasAuthority('ADMIN')" href="/productlist" class="btn-outline-danger">Cancel</a>
+
+		</form>
+	</div>
+	</div>
+</body>
+
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Edit product</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link type="text/css" rel="stylesheet" href="css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" />
+    
+</head>
+
+<body>
+    <h1>Edit product</h1>
+  
+    <div class="col-md-6">
+		<form th:object="${productToEdit}" th:action="@{/save}" action="#" method="post">
+			<input type="hidden" th:field="*{id}" />
+		  	<label for="productName">Purchase</label>
+			<input type="text" id="productName" th:field="*{productName}"  />
+			<div style="clear: both; display: block; height: 10px;"></div>
+		  	<label for="quantity">Quantity</label>
+			<input type="text" id="quantity" th:field="*{quantity}"  />
+			<div style="clear: both; display: block; height: 10px;"></div>
+		  	<label for="price">Price</label>
+			<input type="text"id="price" th:field="*{price}"  />
+			<div style="clear: both; display: block; height: 10px;"></div>
+			
+            <label for="comments">Comments</label>
+            <input type="text"id="comments" th:field="*{comments}" />
+			<div style="clear: both; display: block; height: 10px;"></div>
+
+            <label for="status"> Status</label>
+			<select id="status" th:field="*{status}" class="form-control">
+				<option th:each="statuslist: ${statuses}" th:value="${statuslist.statusId}" th:text="${statuslist.status}"></option>
+			</select>
+            <div style="clear: both; display: block; height: 10px;"></div>
+            <label for="status"> Buyer Info</label>
+			<select id="userlist" th:field="*{appUser}" class="form-control">
+				<option th:each="userlist: ${productBuyer}" th:value="${userlist.cmId}" 
+                th:text="${userlist.cmFirstName +' '+ userlist.cmLastName +' '+ userlist.cmEmail+' '+ userlist.userName}"
+                ></option>
+			</select>  
+			<div style="clear: both; display: block; height: 10px;"></div>
+			<div th:each="photo : ${productPhotos}">
+                <div>
+                    <label>Photo Link:</label>
+                    <input type="text" th:value="${photo.photoLink}" readonly />
+					<button type="button" class="btn btn-outline-danger delete-photo" th:attr="data-photo-id=${photo.photoId}" th:onclick="'deletePhoto(' + ${productToEdit.id} + ', ' + ${photo.photoId} + ')'">Delete</button>
+
+                </div>
+            </div>
+			<input type="submit" value="Save changes" class="btn btn-success"></input>
+			<div style="clear: both; display: block; height: 10px;"></div>
+			<a sec:authorize="hasAuthority('ADMIN')" href="/productlist" class="btn-outline-danger">Cancel</a>
+		</form>
+		
+             
+	</div>
+	<script>
+		function deletePhoto(productId, photoId) {
+			if (confirm('Are you sure you want to delete this photo?')) {
+				var url = '/deletePhoto/' + productId + '/' + photoId;
+            
+            window.location.href = url; 
+			}
+		}
+	</script>
+</body>
+
+</html>
+

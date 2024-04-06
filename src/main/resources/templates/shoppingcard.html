@@ -1,0 +1,115 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>ShoppingCardList</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link type="text/css" rel="stylesheet" href="css/bootstrap.min.css" th:href="@{css/bootstrap.min.css}" />
+    <link rel="stylesheet" href="css/custom.css"/>
+</head>
+
+<body>
+    <h1>My shopping card</h1>
+    <div class="col-md-4">
+        <span  sec:authentication="name">Name</span>
+	</div>
+
+	<div class="col-md-4" style="padding:10px 0">
+		<form th:action="@{/logout}" method="post">
+			<input type="submit" value="Sign Out" class="btn btn-sm btn-danger"/>
+		</form>
+	</div>
+   
+    <div class="d-grid d-md-flex justify-content-md-end">
+        <a href="/productlist" class= "btn btn-warning" >Return to Shopping</a>
+        
+    </div>
+    <div style="clear: both; display: block; height: 20px;"></div>
+    
+        <table class="table table-striped">
+            <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Price</th> 
+            <th>Photos</th>
+            <th>Comments</th>
+            <th>Status</th>
+            
+            </tr>
+            <tr th:each=" product : ${products}">
+                
+                <td th:text="${product.productName}"></td>
+                <td th:text="${product.quantity}"></td>
+                <td th:text="${product.price}"></td>
+                <td>
+                    <div class="photo-container">
+                        <th:block th:each="photo, photoIndex : ${product.photos}">
+                            <div class="photo-row">
+                                <img class="product-photo" 
+                                     th:src="${photo.photoLink}" 
+                                     th:attr="data-productid=${product.id}, data-photoid=${photoIndex.index}"
+                                     alt="Product Photo" />
+                            </div>
+                        </th:block>
+                    </div>
+                   
+                </td>
+                <td th:text="${product.comments}"></td>
+                <td th:text="${product.status.status}"></td>
+           
+            </tr>
+        </table>
+          
+
+        <div id="modal">
+            <span class="close" onclick="hideModal()">&times;</span>
+            <img id="modal-image" src="" alt="Product Photo">
+        </div>
+    
+        <script>
+            var modal = document.getElementById("modal");
+            var modalImage = document.getElementById("modal-image");
+            var currentProductId = null;
+            var currentPhotoIndex = null;
+            var totalPhotos = null;
+        
+            document.querySelectorAll(".product-photo").forEach(function(photo) {
+                photo.addEventListener("click", function() {
+                    currentProductId = this.getAttribute("data-productid");
+                    currentPhotoIndex = parseInt(this.getAttribute("data-photoid"));
+                    totalPhotos = document.querySelectorAll(".product-photo[data-productid='" + currentProductId + "']").length;
+                    showModal();
+                });
+            });
+        
+            document.querySelector(".close").addEventListener("click", function() {
+                hideModal();
+            });
+        
+            window.addEventListener("click", function(event) {
+                if (event.target == modal) {
+                    hideModal();
+                }
+            });
+        
+            function showModal() {
+                modal.style.display = "block";
+                totalPhotos = document.querySelectorAll(".product-photo[data-productid='" + currentProductId + "']").length;
+                console.log("total: "+ totalPhotos);
+                modalImage.src = document.querySelector(".product-photo[data-productid='" + currentProductId + "'][data-photoid='" + currentPhotoIndex + "']").src;
+            }
+        
+            function hideModal() {
+                modal.style.display = "none";
+            }
+        
+            modalImage.addEventListener("click", function() {
+                if (currentProductId !== null && totalPhotos > 1) {
+                    currentPhotoIndex = (currentPhotoIndex + 1) % totalPhotos;
+                    modalImage.src = document.querySelector(".product-photo[data-productid='" + currentProductId + "'][data-photoid='" + currentPhotoIndex + "']").src;
+                }
+            });
+        </script>
+        
+</body>
+</html>

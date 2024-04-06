@@ -27,7 +27,7 @@ public class MystoreApplication {
 @Bean
 	public CommandLineRunner productDemo (ProductRepository prepository, StatusRepository srepository, PhotosRepository phrepository, AppUserRepository arepository) {
 	return (args) -> {
-		log.info("save products");
+		log.info("save product");
 
 		AppUser user1 = new AppUser("user","First User Name","First User Lastname","FirstEmail", "$2a$06$3jYRJrg0ghaaypjZ/.g4SethoeA51ph3UD4kZi9oPkeMTpjKU5uo6","USER");
 		AppUser user2 = new AppUser("admin","Tanja","Lyubavskaya","tEmail", "$2a$10$0MMwY.IQqpsVc1jC8u7IJ.2rT8b0Cd3b3sfIBGV2zfgnPGtT4r0.C","ADMIN");
@@ -36,11 +36,13 @@ public class MystoreApplication {
 
 		Status status1 = new Status ("New");
 		Status status2 = new Status("Process");
-		Status status3 = new Status("Sold");
+		Status status3 = new Status("Send to delivery");
+		Status status4 = new Status("Sold");
 			
 		srepository.save(status1);
 		srepository.save(status2);
 		srepository.save(status3);
+		srepository.save(status4);
 		
 		Product jeans= new Product ("Jeans",1,25.50,"L",null,user2,status1);
 		Product ties= new Product ("Ties",5,20.00,"L",null, user2,status1);
@@ -55,15 +57,17 @@ public class MystoreApplication {
 		Photos photo3 = new Photos("images/neckties-210347_1280.jpg",ties);
 		Photos photo4 = new Photos("images/silk-tie-2846862_1280.jpg",ties);
 		Photos photo5 = new Photos("images/blank-1886001_1280.png",tshirt);
-			
+		
+
 		phrepository.save(photo1);
 		phrepository.save(photo2);
 		phrepository.save(photo3);
 		phrepository.save(photo4);
 		phrepository.save(photo5);
 		
-		for (Product products : prepository.findAll()) {
-			log.info(products.toString());
+		
+		for (Product product : prepository.findAll()) {
+			log.info(product.toString());
 
 		}
 		

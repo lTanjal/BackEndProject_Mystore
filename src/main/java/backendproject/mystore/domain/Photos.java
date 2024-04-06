@@ -16,14 +16,14 @@ public class Photos {
 
     @ManyToOne
     @JoinColumn(name = "productId")
-    private Product products;
+    private Product product;
 
     public Photos() {
     }
 
-    public Photos(String photoLink, Product products) {
+    public Photos(String photoLink, Product product) {
         this.photoLink = photoLink;
-        this.products = products;
+        this.product = product;
     }
 
     public Long getPhotoId() {
@@ -42,17 +42,17 @@ public class Photos {
         this.photoLink = photoLink;
     }
 
-    public Product getProducts() {
-        return products;
+    public Product getProduct() {
+        return product;
     }
 
-    public void setProducts(Product products) {
-        this.products = products;
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     @Override
     public String toString (){
-        return "Photo links [photoId= "+photoId + ", Link "+ photoLink + ", product="+ this.getProducts().getProductName()+"]";
+        return "Photo links [photoId= "+photoId + ", Link "+ photoLink + ", product=" + (product != null ? product.getId() : "null") + "]";
     }
 
 }
